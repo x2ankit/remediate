@@ -65,3 +65,4 @@ secrets.json
 
 # TypeScript artefacts (not part of Python project)
 remediation-engine/
+pitch_script.html
