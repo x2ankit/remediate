@@ -1,15 +1,23 @@
 import json
 from pathlib import Path
-from flask import Flask, jsonify
-from flask_cors import CORS
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
-app = Flask(__name__)
-CORS(app)
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 BASE_DIR = Path(__file__).parent.parent
-AUDIT_FILE = BASE_DIR / "outputs" / "audit_log.jsonl"
+AUDIT_FILE = BASE_DIR / "audit_log.jsonl"
 
-@app.route("/api/results")
+@app.get("/api/results")
 def get_results():
     records = []
     if AUDIT_FILE.exists():
@@ -19,6 +27,8 @@ def get_results():
                 if line:
                     records.append(json.loads(line))
     
-    return jsonify(records)
+    return records
 
-# Vercel needs the app exposed (often just the app variable is enough for python functions)
+@app.get("/")
+def read_root():
+    return FileResponse(BASE_DIR / "public" / "index.html")

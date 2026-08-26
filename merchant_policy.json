@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "policy_version": "1.0.0",
+  "merchant_id": "MERCHANT_DEMO_001",
+  "merchant_name": "Acme SaaS Solutions",
+  "effective_date": "2026-08-01",
+
+  "discount_policy": {
+    "enabled": true,
+    "max_discount_pct": 15,
+    "max_discount_absolute_inr": 5000,
+    "allowed_discount_types": ["one_time", "temporary_recurring"],
+    "temporary_discount_duration_months": 3,
+    "discount_cooldown_days": 90,
+    "note": "A customer cannot receive a discount again within 90 days of the last one."
+  },
+
+  "emi_policy": {
+    "enabled": true,
+    "allow_emi_conversion": true,
+    "min_order_value_inr": 3000,
+    "max_emi_months": 6,
+    "allowed_emi_months": [2, 3, 6],
+    "emi_surcharge_pct": 0,
+    "note": "Zero-cost EMI is allowed. Minimum order ₹3,000 to qualify."
+  },
+
+  "promise_to_pay_policy": {
+    "enabled": true,
+    "max_deferral_days": 30,
+    "max_promise_attempts_per_invoice": 2,
+    "auto_pause_retries_on_promise": true,
+    "send_reminder_hours_before": 24
+  },
+
+  "subscription_downgrade_policy": {
+    "enabled": true,
+    "allow_downgrade": true,
+    "allow_pause": true,
+    "max_pause_months": 2,
+    "min_plan_value_inr": 299
+  },
+
+  "intervention_budget": {
+    "max_interventions_per_customer_per_30d": 3,
+    "max_messages_per_event": 2,
+    "intervention_cooldown_hours": 48,
+    "note": "After 3 interventions in 30 days for a customer, the engine MUST use tool_do_nothing."
+  },
+
+  "stopping_rules": {
+    "stop_on_explicit_customer_decline": true,
+    "stop_on_intervention_budget_exceeded": true,
+    "stop_on_recovery_probability_below_pct": 5,
+    "stop_on_expected_net_value_below_inr": 50,
+    "stop_on_error_source": ["customer_fraud", "card_stolen"],
+    "note": "Engine must call tool_do_nothing when any stopping rule is triggered."
+  },
+
+  "human_escalation": {
+    "enabled": true,
+    "escalate_on_amount_above_inr": 50000,
+    "escalate_on_b2b_invoice_overdue_days": 14,
+    "escalate_channel": "crm_ticket"
+  },
+
+  "allowed_payment_methods_for_recovery": ["upi", "card", "netbanking", "payment_link"],
+
+  "communication_tone": "empathetic_professional",
+  "brand_name": "Acme",
+  "support_email": "support@acme.example.com"
+}

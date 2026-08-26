@@ -8,6 +8,10 @@ Usage:
 """
 import json, logging, time, sys, os
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load .env file automatically
+load_dotenv()
 
 # Make engine package importable from repo root
 sys.path.insert(0, str(Path(__file__).parent))
@@ -24,10 +28,10 @@ logging.basicConfig(
 logger = logging.getLogger("batch_runner")
 
 ROOT         = Path(__file__).parent
-EVENTS_FILE  = ROOT / "data"    / "synthetic_events.jsonl"
-POLICY_FILE  = ROOT / "config"  / "merchant_policy.json"
-AUDIT_FILE   = ROOT / "outputs" / "audit_log.jsonl"
-OUTCOMES_FILE = ROOT / "outputs" / "batch_outcomes.jsonl"
+EVENTS_FILE  = ROOT / "synthetic_events.jsonl"
+POLICY_FILE  = ROOT / "merchant_policy.json"
+AUDIT_FILE   = ROOT / "audit_log.jsonl"
+OUTCOMES_FILE = ROOT / "batch_outcomes.jsonl"
 
 
 def main():
