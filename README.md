@@ -24,11 +24,11 @@
 
 ## 🎯 What Is This?
 
-**remediate** is a **Policy-Bounded Conversational Financial Concierge** — an LLM agent that recovers high-value, complex payment failures that standard retry-and-notify systems **cannot handle**.
+**remediate** is a **Policy-Bounded Conversational Financial Concierge** - an LLM agent that recovers high-value, complex payment failures that standard retry-and-notify systems **cannot handle**.
 
-It doesn't compete with Razorpay's Smart Retries or Agent Studio. It specialises in cases where the root cause is **financial friction** — cash flow issues, sticker shock, B2B billing delays — requiring **negotiation and restructuring**, not just another payment link blast.
+It doesn't compete with Razorpay's Smart Retries or Agent Studio. It specialises in cases where the root cause is **financial friction** - cash flow issues, sticker shock, B2B billing delays - requiring **negotiation and restructuring**, not just another payment link blast.
 
-> Built for **Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**
+> Built for **Razorpay AI Buildathon 2026 - Track 03: AI Revenue Recovery**
 
 ---
 
@@ -84,7 +84,7 @@ flowchart TD
 | **Dynamic EMI Conversion** | Restructures high-value failures into 2–6 monthly instalments | Payment Links (series) |
 | **Promise-to-Pay Tracker** | Parses natural language date, pauses retries, schedules link delivery | Notifications + Scheduler |
 | **Anti-Churn Downgrades** | Switches subscription to lower tier or temporary pause | Subscriptions API |
-| **Smart Discounts** | Bounded by `max_discount_pct: 15%` — cooldown enforced | Payment Links |
+| **Smart Discounts** | Bounded by `max_discount_pct: 15%` - cooldown enforced | Payment Links |
 | **Fraud Hard Stop** | `card_stolen` / `customer_fraud_risk` → immediate do_nothing | None (policy override) |
 | **Late-Auth Safety** | Razorpay timeout → hold, no duplicate link created | None (wait) |
 | **Intervention Budget** | Customer with ≥3 interventions in 30 days → auto-skip | Policy enforcement |
@@ -99,16 +99,16 @@ flowchart TD
 
 | Metric | Baseline (Naive Retry) | **remediate (AI Engine)** | Lift |
 |--------|----------------------|--------------------------|------|
-| Events Processed | 500 | 500 | — |
-| Revenue at Risk (Rs) | 2,21,72,623 | 2,21,72,623 | — |
+| Events Processed | 500 | 500 | - |
+| Revenue at Risk (Rs) | 2,21,72,623 | 2,21,72,623 | - |
 | Revenue Recovered (Rs) | 88,69,049 | **92,71,323** | **+Rs 4,02,274** |
 | Recovery Rate | 40.0% | **41.8%** | **+1.8 pp** |
 | Brand Damage Cost (Rs) | 1,215 | **0** | Eliminated |
 | Fraud Events Stopped | 0 / 59 | **59 / 59** | **100%** |
 | Late-Auth Double-Charges | 22 sent | **0 sent** | Prevented |
 | Do-Nothing Decisions | 0 | **99** | Policy-compliant |
-| **Net Recovery Lift** | — | — | **+4.6%** |
-| Processing Time | — | **4.6 seconds** | — |
+| **Net Recovery Lift** | - | - | **+4.6%** |
+| Processing Time | - | **4.6 seconds** | - |
 
 ### Tool Distribution
 
@@ -141,7 +141,7 @@ flowchart TD
 
 ```
 remediate/
-├── batch_runner.py          # 🚀 Entry point — run this
+├── batch_runner.py          # 🚀 Entry point - run this
 │
 ├── config/
 │   └── merchant_policy.json # 📋 All AI bounds defined here
@@ -215,7 +215,7 @@ python scripts/generate_events.py
 # Output: data/synthetic_events.jsonl (500 events)
 ```
 
-### 3. Run the Batch (Heuristic Mode — no API key needed)
+### 3. Run the Batch (Heuristic Mode - no API key needed)
 
 ```bash
 python batch_runner.py
@@ -245,7 +245,7 @@ python dashboard/server.py
 
 ---
 
-## 🔬 Decision Flow — How the AI Chooses
+## 🔬 Decision Flow - How the AI Chooses
 
 ```mermaid
 flowchart LR
@@ -284,42 +284,6 @@ flowchart LR
 
 ---
 
-## 🧪 Running Tests
-
-```bash
-# Verify the engine imports correctly
-python -c "from engine.event_normalizer import normalize; print('OK')"
-
-# Run a single event through the pipeline
-python -c "
-import json, sys
-sys.path.insert(0, '.')
-from engine.event_normalizer import normalize
-from engine.context_aggregator import enrich
-with open('config/merchant_policy.json') as f:
-    policy = json.load(f)
-raw = {'event_id': 'test_001', 'event_index': 0, 'event_type': 'payment.failed',
-       'timestamp': '2026-08-26T12:00:00Z', 'merchant_id': 'DEMO',
-       'customer': {'id': 'c1', 'name': 'Test User', 'email': 'test@example.com',
-                    'phone': '+919999999999', 'is_b2b': False,
-                    'previous_interventions_30d': 0, 'previous_successful_payments': 5,
-                    'last_discount_days_ago': None},
-       'payment': {'payment_id': 'p1', 'order_id': 'o1', 'amount_inr': 29999,
-                   'currency': 'INR', 'method': 'card', 'product_name': 'Pro Plan',
-                   'product_type': 'subscription'},
-       'error': {'code': 'BAD_REQUEST_ERROR', 'source': 'issuer',
-                 'step': 'payment_authorization', 'reason': 'insufficient_funds',
-                 'description': 'Insufficient balance'}}
-event = normalize(raw)
-ctx = enrich(event, policy)
-print('Priority:', ctx.recovery_priority)
-print('Probability:', ctx.estimated_recovery_probability_pct)
-print('Strategies:', ctx.suggested_strategies)
-"
-```
-
----
-
 ## 📦 Dependencies
 
 | Package | Version | Purpose |
@@ -327,7 +291,7 @@ print('Strategies:', ctx.suggested_strategies)
 | `google-generativeai` | ≥ 0.8.0 | Gemini function calling (optional) |
 | `python-dateutil` | ≥ 2.9.0 | Date parsing for Promise-to-Pay |
 
-> **No API key needed** — the engine runs in heuristic mode with zero external dependencies.
+> **No API key needed** - the engine runs in heuristic mode with zero external dependencies.
 
 ---
 
@@ -339,7 +303,8 @@ This project was built for the **Razorpay AI Buildathon 2026**. PRs, issues, and
 
 <div align="center">
 
-**Built with ❤️ for [@Razorpay](https://twitter.com/Razorpay) · [@RazorpayDevs](https://twitter.com/RazorpayDevs)**
+**Engineered for the Razorpay Ecosystem**<br/>
+[@Razorpay](https://twitter.com/Razorpay) · [@RazorpayDevs](https://twitter.com/RazorpayDevs)
 
 `#RazorpayBuildathon` `#Track03` `#AIRevenueRecovery` `#FinTech` `#GenerativeAI`
 
