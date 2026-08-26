@@ -15,7 +15,9 @@ app.add_middleware(
 )
 
 BASE_DIR = Path(__file__).parent.parent
-AUDIT_FILE = BASE_DIR / "audit_log.jsonl"
+AUDIT_FILE = Path(__file__).parent / "audit_log.jsonl"
+if not AUDIT_FILE.exists():
+    AUDIT_FILE = BASE_DIR / "audit_log.jsonl"
 
 @app.get("/api/results")
 def get_results():
