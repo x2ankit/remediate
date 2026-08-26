@@ -41,24 +41,24 @@ outputs/batch_outcomes.jsonl
 secrets.json
 *.key
 
-# Old flat-file versions (superseded by engine/ package structure)
-event_normalizer.py
-context_aggregator.py
-decision_engine.py
-razorpay_mock.py
-remediation_executor.py
-orchestrator.py
-audit_logger.py
-dashboard.html
-dashboard_server.py
-evaluator.py
-generate_events.py
-implementation_plan.md
-research_context.md
-synthetic_events.jsonl
-audit_log.jsonl
-batch_outcomes.jsonl
-evaluation_report.md
+# Old flat-file versions at root (superseded by engine/ package structure)
+/event_normalizer.py
+/context_aggregator.py
+/decision_engine.py
+/razorpay_mock.py
+/remediation_executor.py
+/orchestrator.py
+/audit_logger.py
+/dashboard.html
+/dashboard_server.py
+/evaluator.py
+/generate_events.py
+/implementation_plan.md
+/research_context.md
+/synthetic_events.jsonl
+/audit_log.jsonl
+/batch_outcomes.jsonl
+/evaluation_report.md
 
 # Jupyter
 .ipynb_checkpoints/
