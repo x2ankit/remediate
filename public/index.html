@@ -365,16 +365,18 @@
     remediate
   </div>
   <div class="nav-list">
-    <div class="nav-item active" onclick="activateNav(this)">Dashboard</div>
-    <div class="nav-item" onclick="activateNav(this)">Failed Events</div>
-    <div class="nav-item" onclick="activateNav(this)">Interventions</div>
-    <div class="nav-item" onclick="activateNav(this)">Merchant Policies</div>
-    <div class="nav-item" onclick="activateNav(this)">Settings</div>
+    <div class="nav-item active" onclick="switchTab('dashboard', this)">Dashboard</div>
+    <div class="nav-item" onclick="switchTab('failed', this)">Failed Events</div>
+    <div class="nav-item" onclick="switchTab('interventions', this)">Interventions</div>
+    <div class="nav-item" onclick="switchTab('policies', this)">Merchant Policies</div>
+    <div class="nav-item" onclick="switchTab('settings', this)">Settings</div>
   </div>
 </aside>
 
 <!-- Main Content -->
 <main>
+  <div id="tab-dashboard" class="tab-view" style="display: block;">
+
   <div class="top-header">
     <h1>Recovery Intelligence</h1>
     <div class="header-actions">
@@ -465,6 +467,28 @@
       </table>
     </div>
   </div>
+
+  </div>
+
+  <div id="tab-failed" class="tab-view" style="display: none;">
+    <div class="top-header"><h1>Failed Events</h1></div>
+    <div class="panel"><p style="color:var(--text-muted)">Detailed log of all failed events is under construction.</p></div>
+  </div>
+  
+  <div id="tab-interventions" class="tab-view" style="display: none;">
+    <div class="top-header"><h1>Interventions</h1></div>
+    <div class="panel"><p style="color:var(--text-muted)">Intervention configuration and history are under construction.</p></div>
+  </div>
+  
+  <div id="tab-policies" class="tab-view" style="display: none;">
+    <div class="top-header"><h1>Merchant Policies</h1></div>
+    <div class="panel"><p style="color:var(--text-muted)">Merchant policy management is under construction.</p></div>
+  </div>
+  
+  <div id="tab-settings" class="tab-view" style="display: none;">
+    <div class="top-header"><h1>Settings</h1></div>
+    <div class="panel"><p style="color:var(--text-muted)">System settings are under construction.</p></div>
+  </div>
 </main>
 
 <script>
@@ -480,9 +504,16 @@ const TOOL_COLORS = {
   do_nothing: 'var(--text-muted)',
 };
 
-function activateNav(el) {
+function switchTab(tabId, el) {
+  // Update nav highlight
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
+  if (el) el.classList.add('active');
+
+  // Hide all tabs
+  document.querySelectorAll('.tab-view').forEach(t => t.style.display = 'none');
+  
+  // Show selected tab
+  document.getElementById('tab-' + tabId).style.display = 'block';
 }
 
 const PILL_CLASSES = {
