@@ -354,6 +354,57 @@
     .btn-primary:hover {
       background: var(--primary-hover);
     }
+
+    /* XAI Details Panel */
+    .details-row td {
+      padding: 0;
+      border-bottom: none;
+    }
+    .xai-panel {
+      background: #F8FAFC;
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      margin: 0 16px 16px 16px;
+      border-radius: 0 8px 8px 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.02);
+    }
+    .xai-title {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .xai-text {
+      font-size: 0.875rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+    .wa-mockup {
+      background: #E1FDD7;
+      padding: 12px 16px;
+      border-radius: 12px 12px 12px 0px;
+      font-size: 0.875rem;
+      color: #111B21;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+      display: inline-block;
+      position: relative;
+    }
+    .wa-mockup::after {
+      content: '';
+      position: absolute;
+      left: -8px;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border: 8px solid transparent;
+      border-right-color: #E1FDD7;
+      border-bottom-color: transparent;
+    }
   </style>
 </head>
 <body>
@@ -602,8 +653,27 @@ function render(records) {
   // Recent events table
   const PRIORITY_CLASSES = { HIGH: 'pill-green', MEDIUM: 'pill-yellow', LOW: 'pill-primary', SKIP: 'pill-gray' };
   const recent = records.slice(-30).reverse();
-  document.getElementById('events-tbody').innerHTML = recent.map(r => `
-    <tr>
+  
+  document.getElementById('events-tbody').innerHTML = recent.map((r, i) => {
+    let waMsg = "Hi " + r.customer.name.split(' ')[0] + ", ";
+    let amt = "₹" + Math.round(r.payment.amount_inr).toLocaleString('en-IN');
+    
+    if (r.decision.tool_called === 'create_payment_link') {
+        waMsg += "your payment of " + amt + " didn't go through. Please use this secure link to retry without extra fees.";
+    } else if (r.decision.tool_called === 'convert_to_emi') {
+        waMsg += "your payment of " + amt + " failed. To make it easier, we've enabled EMI options for you to split the cost.";
+    } else if (r.decision.tool_called === 'apply_discount') {
+        waMsg += "your transaction failed. As a valued customer, here's a special discount link to complete your purchase.";
+    } else if (r.decision.tool_called === 'schedule_promise_to_pay') {
+        waMsg += "we noticed your invoice is overdue. Please let us know when you can process it so we can pause reminders.";
+    } else if (r.decision.tool_called === 'downgrade_subscription') {
+        waMsg += "your subscription renewal failed. Would you like to switch to a lower tier for now?";
+    } else {
+        waMsg = "(No outreach scheduled - AI decision: " + r.decision.tool_called + ")";
+    }
+
+    return `
+    <tr onclick="document.getElementById('xai-${i}').style.display = document.getElementById('xai-${i}').style.display === 'none' ? 'table-row' : 'none'" style="cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='white'" title="Click to view AI reasoning">
       <td class="mono">#${r.event_index}</td>
       <td>${r.customer.name}</td>
       <td class="mono">₹${Math.round(r.payment.amount_inr).toLocaleString('en-IN')}</td>
@@ -613,7 +683,22 @@ function render(records) {
       <td class="mono ${r.outcome.amount_recovered_inr > 0 ? 'amount-positive' : 'amount-neutral'}">
         ${r.outcome.amount_recovered_inr > 0 ? fmt(r.outcome.amount_recovered_inr) : '—'}
       </td>
-    </tr>`).join('');
+    </tr>
+    <tr id="xai-${i}" class="details-row" style="display: none;">
+      <td colspan="7">
+        <div class="xai-panel">
+          <div>
+            <div class="xai-title">🧠 Explainable AI (XAI) Reasoning</div>
+            <div class="xai-text">${r.decision.rationale || "No rationale logged."}</div>
+          </div>
+          <div>
+            <div class="xai-title">💬 Simulated Customer Outreach</div>
+            <div class="wa-mockup">${waMsg}</div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 async function refresh() {
