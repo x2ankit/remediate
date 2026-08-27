@@ -64,15 +64,20 @@ flowchart TD
 
     H[⚙️ Remediation Executor\nremediation_executor.py\nMock Razorpay API\nIdempotency + Retry] --> I
 
-    I[📝 Audit Logger\naudit_logger.py\nStructured JSONL\nFull Decision Record] --> J
+    I[📝 Audit Logger\naudit_logger.py\nSQLite DB + JSONL\nHTTP Broadcast] --> J
+    I --> K[🚀 FastAPI + WebSocket\napi/index.py]
 
     J[📊 Evaluation Engine\nscripts/evaluator.py\nAI vs Baseline\nRecovery Report]
+    
+    K --> L[💻 React Dashboard\nReal-time UI]
 
     style A fill:#072654,color:#fff
     style F fill:#4285F4,color:#fff
     style G fill:#1a1f2e,color:#fff
     style I fill:#059669,color:#fff
     style D fill:#dc2626,color:#fff
+    style K fill:#009688,color:#fff
+    style L fill:#61dafb,color:#000
 ```
 
 ---
@@ -160,9 +165,12 @@ remediate/
 │   ├── generate_events.py   # Generates 500 synthetic events
 │   └── evaluator.py         # AI vs baseline comparison
 │
-├── dashboard/
-│   ├── index.html           # Live results dashboard
-│   └── server.py            # HTTP server (localhost:8080)
+├── api/
+│   └── index.py             # 🚀 FastAPI Server (REST + WebSocket)
+│
+├── dashboard-app/           # 💻 React + Vite Frontend
+│   ├── src/                 # Modern UI with Tailwind CSS v4
+│   └── package.json         # Node dependencies
 │
 ├── data/                    # Generated (not committed)
 │   └── synthetic_events.jsonl
@@ -238,9 +246,17 @@ python scripts/evaluator.py
 
 ### 6. Launch Live Dashboard
 
+Start the backend API server:
 ```bash
-python dashboard/server.py
-# Open: http://localhost:8080
+uvicorn api.index:app --reload --port 8000
+```
+
+Start the React frontend:
+```bash
+cd dashboard-app
+npm install
+npm run dev
+# Open: http://localhost:5174
 ```
 
 ---
