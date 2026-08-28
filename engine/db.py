@@ -48,9 +48,9 @@ class AuditRecord(Base):
             "amount_recovered_inr": self.amount_recovered_inr
         }
 
-DATABASE_URL = "sqlite:///./data/remediate.db"
+DATABASE_URL = "postgresql://neondb_owner:npg_VN0ALXCn1rWh@ep-rough-butterfly-ae0mppce-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db():

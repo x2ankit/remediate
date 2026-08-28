@@ -7,27 +7,26 @@ export default function App() {
 
   useEffect(() => {
     // 1. Fetch historical data on load
-    fetch('http://localhost:8000/api/results')
+    fetch('/api/results')
       .then(res => res.json())
       .then(data => setEvents(data))
       .catch(console.error);
 
-    // 2. Connect to WebSocket for real-time updates
-    const ws = new WebSocket('ws://localhost:8000/ws/live');
-    
-    ws.onopen = () => setConnected(true);
-    ws.onclose = () => setConnected(false);
-    
-    ws.onmessage = (event) => {
-      try {
-        const newRecord = JSON.parse(event.data);
-        setEvents(prev => [...prev, newRecord]);
-      } catch (e) {
-        console.error("Invalid WS message", e);
-      }
-    };
+    // 2. Poll for updates every 3 seconds
+    const interval = setInterval(() => {
+      fetch('/api/results')
+        .then(res => {
+          if (res.ok) setConnected(true);
+          return res.json();
+        })
+        .then(data => setEvents(data))
+        .catch(err => {
+          console.error(err);
+          setConnected(false);
+        });
+    }, 3000);
 
-    return () => ws.close();
+    return () => clearInterval(interval);
   }, []);
 
   const totalTargeted = events.reduce((sum, e) => sum + (e.amount_targeted_inr || 0), 0);

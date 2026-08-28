@@ -107,11 +107,6 @@ class AuditLogger:
         self.db.add(db_record)
         self.db.commit()
         
-        # 3. Broadcast to API for WebSocket clients
-        try:
-            requests.post("http://127.0.0.1:8000/api/internal/broadcast", json=record_dict, timeout=0.5)
-        except Exception as e:
-            pass # ignore if server is not running
             
         self._count += 1
 

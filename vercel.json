@@ -6,8 +6,11 @@
       "use": "@vercel/python"
     },
     {
-      "src": "public/**/*",
-      "use": "@vercel/static"
+      "src": "dashboard-app/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "routes": [
@@ -16,8 +19,11 @@
       "dest": "/api/index.py"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
-      "dest": "/public/index.html"
+      "dest": "/dashboard-app/index.html"
     }
   ]
 }
