@@ -1,7 +1,11 @@
+import os
 import json
 from datetime import datetime, timezone
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, DateTime
 from sqlalchemy.orm import sessionmaker, declarative_base
+from dotenv import load_dotenv
+
+load_dotenv()
 
 Base = declarative_base()
 
@@ -48,9 +52,11 @@ class AuditRecord(Base):
             "amount_recovered_inr": self.amount_recovered_inr
         }
 
-DATABASE_URL = "postgresql://neondb_owner:npg_VN0ALXCn1rWh@ep-rough-butterfly-ae0mppce-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL is missing. Please set it in your .env file.")
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=300)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db():
