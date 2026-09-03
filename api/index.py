@@ -21,6 +21,7 @@ init_db()
 
 
 @app.get("/api/results")
+@app.get("/results")
 def get_results():
     db = SessionLocal()
     try:
