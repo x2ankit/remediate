@@ -20,17 +20,16 @@ BASE_DIR = Path(__file__).parent.parent
 init_db()
 
 
-@app.get("/api/results")
-@app.get("/results")
-def get_results():
-    db = SessionLocal()
-    try:
-        # For simplicity, load all (in prod, paginate)
-        records = db.query(AuditRecord).order_by(AuditRecord.id).all()
-        return [r.to_dict() for r in records]
-    finally:
-        db.close()
-
+@app.get("/{full_path:path}")
+def catch_all(full_path: str):
+    if "results" in full_path:
+        db = SessionLocal()
+        try:
+            records = db.query(AuditRecord).order_by(AuditRecord.id).all()
+            return [r.to_dict() for r in records]
+        finally:
+            db.close()
+    return {"path_received": full_path, "status": "no_match"}
 
 @app.get("/")
 def read_root():
